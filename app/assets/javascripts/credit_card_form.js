@@ -4,43 +4,47 @@ var show_error, stripeResponseHandler, submitHandler;
 
 submitHandler = function (event) {
 
-    var $form = $(event.target);
-    $form.find("input[type=submit]").prop("disabled", true);
+var $form = $(event.target);
 
-  //If Stripe was initialized correctly this will create a token using the credit card info
+$form.find("input[type=submit]").prop("disabled", true);
 
-    if(Stripe){
-       Stripe.card.createToken($form, stripeResponseHandler);
+//If Stripe was initialized correctly this will create a token using the credit card info
 
-      } else {
-        show_error("Failed to load credit card processing functionality. Please reload this page in your browser.")
-      }
+if(Stripe){
 
-       return false;
+Stripe.card.createToken($form, stripeResponseHandler);
+
+} else {
+
+show_error("Failed to load credit card processing functionality. Please reload this page in your browser.")
+
+}
+
+return false;
 
 };
 
-   $(".cc_form").on('submit', submitHandler);
+$(".cc_form").on('submit', submitHandler);
 
-  stripeResponseHandler = function (status, response) {
+stripeResponseHandler = function (status, response) {
 
-    var token, $form;
+var token, $form;
 
-  $form = $('.cc_form');
+$form = $('.cc_form');
 
-    if (response.error) {
+if (response.error) {
 
-      console.log(response.error.message);
+console.log(response.error.message);
 
-      show_error(response.error.message);
+show_error(response.error.message);
 
-    $form.find("input[type=submit]").prop("disabled", false);
+$form.find("input[type=submit]").prop("disabled", false);
 
-  } else {
+} else {
 
-  token = response.id;
+token = response.id;
 
-    $form.append($("<input type=\"hidden\" name=\"payment[token]\" />").val(token));
+$form.append($("<input type=\"hidden\" name=\"payment[token]\" />").val(token));
 
 $("[data-stripe=number]").remove();
 
@@ -77,11 +81,3 @@ return false;
 };
 
 });
-
-
-
-
-
-})
-
-
